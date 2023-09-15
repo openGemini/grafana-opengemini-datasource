@@ -1,0 +1,27 @@
+{
+	"$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+	"type": "datasource",
+	"name": "openGemini",
+	"id": "opengemini-opengemini-datasource",
+	"metrics": true,
+	"logs": true,
+	"info": {
+		"description": "openGemini grafana datasource plugin",
+		"author": {
+			"name": "Grafana"
+		},
+		"keywords": ["datasource"],
+		"logos": {
+			"small": "img/logo.png",
+			"large": "img/logo.png"
+		},
+		"links": [],
+		"screenshots": [],
+		"version": "%VERSION%",
+		"updated": "%TODAY%"
+	},
+	"dependencies": {
+		"grafanaDependency": ">=9.5.3",
+		"plugins": []
+	}
+}
