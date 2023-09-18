@@ -133,3 +133,4 @@ dist
 .idea
 .vscode
 .fleet
+.DS_Store
