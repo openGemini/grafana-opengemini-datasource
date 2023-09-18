@@ -1,7 +1,7 @@
 import { of } from 'rxjs';
 import { FieldType, MutableDataFrame } from '@grafana/data';
 
-import { openGeminiHttpClient } from '../client';
+import { openGeminiHttpClient } from '../client/index';
 import { SeriesType } from '../client/types';
 import { Formats } from 'types';
 

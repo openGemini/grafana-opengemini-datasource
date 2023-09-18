@@ -21,7 +21,6 @@
     },
     "transpileOnly": true
   },
-  "include": [
-    "../src", "./types"],
+  "include": ["../src", "./types"],
   "extends": "@grafana/tsconfig"
 }
