@@ -18,9 +18,9 @@
 		"links": [],
 		"screenshots": [
 			{ "name": "config-editor", "path": "img/screenshots/screenshot-setting.jpg" },
-			{ "name": "time-series", "path": "img/screenshots/screenshot-timeseries.jpg" },
-			{ "name": "table", "path": "img/screenshots/screenshot-table.jpg" },
-			{ "name": "log", "path": "img/screenshots/screenshot-log.jpg" }
+			{ "name": "time-series", "path": "img/screenshots/screenshot-timeseries.png" },
+			{ "name": "table", "path": "img/screenshots/screenshot-table.png" },
+			{ "name": "log", "path": "img/screenshots/screenshot-log.png" }
 		],
 		"version": "%VERSION%",
 		"updated": "%TODAY%"
