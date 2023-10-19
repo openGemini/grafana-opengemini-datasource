@@ -16,7 +16,12 @@
 			"large": "img/logo.png"
 		},
 		"links": [],
-		"screenshots": [],
+		"screenshots": [
+			{ "name": "config-editor", "path": "img/screenshots/screenshot-setting.jpg" },
+			{ "name": "time-series", "path": "img/screenshots/screenshot-timeseries.jpg" },
+			{ "name": "table", "path": "img/screenshots/screenshot-table.jpg" },
+			{ "name": "log", "path": "img/screenshots/screenshot-log.jpg" }
+		],
 		"version": "%VERSION%",
 		"updated": "%TODAY%"
 	},
