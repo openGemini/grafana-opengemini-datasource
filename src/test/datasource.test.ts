@@ -1,7 +1,7 @@
 import { of, lastValueFrom } from 'rxjs';
 import { DataQueryRequest, DataSourceInstanceSettings, dateMath } from '@grafana/data';
 
-import { DataSource } from '../datasource';
+import { GeminiDataSource } from '../datasource';
 import type { GeminiOptions, GeminiQuery } from '../types';
 import type { SeriesType } from 'client/types';
 
@@ -14,19 +14,8 @@ jest.mock('@grafana/runtime', () => ({
 	}),
 }));
 
-// const getAdhocFiltersMock = jest.fn().mockImplementation(() => []);
-// const replaceMock = jest.fn().mockImplementation((a: string) => a);
-
-// const templateSrcStub = {
-// 	getAdhocFilters: getAdhocFiltersMock,
-// 	replace: replaceMock,
-// } as unknown as TemplateSrv;
-
 describe('openGeminiDataSource', () => {
-	// const ctx: any = {
-	// 	instanceSettings: { url: 'url', name: 'openGemini' },
-	// };
-	let ds: DataSource;
+	let ds: GeminiDataSource;
 	const instanceSettings = {
 		url: '',
 		jsonData: { database: 'NOAA_water_database' },
@@ -34,7 +23,7 @@ describe('openGeminiDataSource', () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
-		ds = new DataSource(instanceSettings);
+		ds = new GeminiDataSource(instanceSettings);
 	});
 
 	describe('When issuing metricFindQuery', () => {

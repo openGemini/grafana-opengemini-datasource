@@ -1,10 +1,11 @@
 import React from 'react';
-import { SegmentSection, SegmentAsync, Segment, SegmentInput } from '@grafana/ui';
-import { SelectableValue } from '@grafana/data';
+import { SegmentAsync, Segment, SegmentInput, useStyles2, InlineLabel } from '@grafana/ui';
+import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 
 import { GeminiQuery, WhereStatement, OPERATORS, CONNECTORS } from 'types';
 import AddSegment from './AddSegment';
-import { toSelectableValue } from '../utils';
+import { toSelectableValue } from '../../utils';
+import { css } from '@emotion/css';
 
 type Props = {
 	whereConditions: WhereStatement[];
@@ -12,10 +13,19 @@ type Props = {
 	loadColumnNames: (isAdd?: boolean) => Promise<Array<SelectableValue<string>>>;
 };
 
-const defaultStatement: WhereStatement = ['select column', '=', 'value', 'AND'];
+export const defaultStatement: WhereStatement = ['select column', '=', 'value', 'AND'];
+
+const getStyles = (theme: GrafanaTheme2) => {
+	return {
+		inlineLabel: css`
+			color: ${theme.colors.primary.text};
+		`,
+	};
+};
 
 const WhereSection = (props: Props) => {
 	const { whereConditions, queryChange, loadColumnNames } = props;
+	const styles = useStyles2(getStyles);
 
 	const addCondition = (select: SelectableValue) => {
 		const [_, ...rest] = defaultStatement;
@@ -34,6 +44,7 @@ const WhereSection = (props: Props) => {
 				if (i !== index) return condition;
 				const newCondition = [...condition];
 				newCondition[changeType] = select;
+
 				return newCondition as unknown as WhereStatement;
 			});
 		}
@@ -42,39 +53,41 @@ const WhereSection = (props: Props) => {
 
 	return (
 		<>
-			<SegmentSection fill={false} label="WHERE">
-				{whereConditions.map((condition, index) => {
-					const [column, operator, value, connector] = condition;
-					return (
-						<>
-							{/* column */}
-							<SegmentAsync
-								value={toSelectableValue(column)}
-								loadOptions={() => loadColumnNames()}
-								onChange={(select) => conditionChange(select.value!, index, 0)}
-							/>
-							{/* operator */}
+			<InlineLabel width="auto" className={styles.inlineLabel}>
+				WHERE
+			</InlineLabel>
+			{whereConditions.map((condition, index) => {
+				const [column, operator, value, connector] = condition;
+
+				return (
+					<React.Fragment key={column}>
+						{/* connector */}
+						{index > 0 && (
 							<Segment
-								value={toSelectableValue(operator)}
-								options={OPERATORS.map(toSelectableValue)}
-								inputMinWidth={40}
-								onChange={(select) => conditionChange(select.value!, index, 1)}
+								value={toSelectableValue(connector)}
+								options={CONNECTORS.map(toSelectableValue)}
+								onChange={(select) => conditionChange(select.value!, index, 3)}
 							/>
-							{/* value */}
-							<SegmentInput value={value} placeholder="value" onChange={(value) => conditionChange(value, index, 2)} />
-							{/* connector */}
-							{index < whereConditions.length - 1 && (
-								<Segment
-									value={toSelectableValue(connector)}
-									options={CONNECTORS.map(toSelectableValue)}
-									onChange={(select) => conditionChange(select.value!, index, 3)}
-								/>
-							)}
-						</>
-					);
-				})}
-				<AddSegment onChange={addCondition} loadOptions={() => loadColumnNames(true)} />
-			</SegmentSection>
+						)}
+						{/* column */}
+						<SegmentAsync
+							value={toSelectableValue(column)}
+							loadOptions={() => loadColumnNames()}
+							onChange={(select) => conditionChange(select.value!, index, 0)}
+						/>
+						{/* operator */}
+						<Segment
+							value={toSelectableValue(operator)}
+							options={OPERATORS.map(toSelectableValue)}
+							inputMinWidth={40}
+							onChange={(select) => conditionChange(select.value!, index, 1)}
+						/>
+						{/* value */}
+						<SegmentInput value={value} placeholder="value" width={40} onChange={(value) => conditionChange(value, index, 2)} />
+					</React.Fragment>
+				);
+			})}
+			<AddSegment onChange={addCondition} loadOptions={() => loadColumnNames(true)} />
 		</>
 	);
 };

@@ -1,10 +1,10 @@
 import React from 'react';
 import { InlineFormLabel, TextArea } from '@grafana/ui';
-import { DataSource } from 'datasource';
+import { GeminiDataSource } from 'datasource';
 
 type Props = {
 	query: string;
-	datasource: DataSource;
+	datasource: GeminiDataSource;
 	onChange: (query?: string) => void;
 };
 const VariableQueryEditor = (props: Props) => {
