@@ -17,19 +17,19 @@ import { GeminiQuery, GeminiOptions } from './types';
 import { GeminiResponse } from './client/types';
 import { openGeminiHttpClient } from './client';
 
-export class DataSource extends DataSourceApi<GeminiQuery, GeminiOptions> {
+export class GeminiDataSource extends DataSourceApi<GeminiQuery, GeminiOptions> {
 	client: openGeminiHttpClient;
 	instanceSettings: DataSourceInstanceSettings<GeminiOptions>;
 	constructor(instanceSettings: DataSourceInstanceSettings<GeminiOptions>, readonly templateSrv: TemplateSrv = getTemplateSrv()) {
 		super(instanceSettings);
 		this.instanceSettings = instanceSettings;
 		this.templateSrv = templateSrv;
-		this.client = new openGeminiHttpClient(instanceSettings.url!, instanceSettings.jsonData);
-		this.interval = instanceSettings.jsonData.minTimeInterval;
+		this.client = new openGeminiHttpClient(instanceSettings.url!, instanceSettings.jsonData, this);
+		this.interval = instanceSettings.jsonData.minTimeInterval || '10s';
 	}
 
 	async metricFindQuery(query: string, options?: any): Promise<MetricFindValue[]> {
-		const queryText = this.templateSrv.replace(query ?? '', options.scopedVars);
+		const queryText = this.templateSrv ? this.templateSrv.replace(query ?? '', options.scopedVars) : query;
 		const res = (await this.client.querySql(queryText, true)) as GeminiResponse;
 		return responseParse(queryText, res);
 	}

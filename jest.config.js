@@ -3,6 +3,9 @@
 process.env.TZ = 'UTC';
 
 module.exports = {
-  // Jest configuration provided by Grafana scaffolding
-  ...require('./.config/jest.config'),
+	// Jest configuration provided by Grafana scaffolding
+	...require('./.config/jest.config'),
+	collectCoverage: true,
+	collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
+	coverageProvider: 'babel',
 };

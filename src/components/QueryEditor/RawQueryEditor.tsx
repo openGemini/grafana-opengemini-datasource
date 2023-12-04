@@ -1,11 +1,11 @@
-import React, { memo, ChangeEvent } from 'react';
+import React, { memo, ChangeEvent, useMemo } from 'react';
 import { CodeEditor, HorizontalGroup, Select, InlineField, Input } from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
+
 import { useShadowedState } from './hooks/useShadowedState';
+import { GeminiQuery, Formats, OPTION_FORMATS } from 'types';
 
-import { GeminiQuery, Formats } from 'types';
-
-type Props = {
+export type Props = {
 	query: GeminiQuery;
 	onRunQuery: () => void;
 	onChange: (query: GeminiQuery) => void;
@@ -13,24 +13,12 @@ type Props = {
 
 const DETAIL_LABEL_WIDTH = 15;
 
-const OPTION_FORMATS: Array<SelectableValue<Formats>> = [
-	{ label: 'Time series', value: Formats.TimeSeries },
-	{ label: 'Table', value: Formats.Table },
-	{ label: 'Logs', value: Formats.Logs },
-];
-
 const RawQueryEditor = (props: Props) => {
 	const { query, onRunQuery, onChange } = props;
-	const curFormat = query.resultFormat ?? 'time_series';
-	const [currentAlias, setCurrentAlias] = useShadowedState(query.alias);
 
-	// dashboard: influxdb config Compatible
-	if (!query.queryText && query.query) {
-		onChange({
-			...query,
-			queryText: query.query,
-		});
-	}
+	const curFormat = useMemo(() => query.resultFormat ?? Formats.TimeSeries, [query.resultFormat]);
+	const [currentAlias, setCurrentAlias] = useShadowedState(query.alias);
+	const [currentKeywords, setCurrentKeywords] = useShadowedState(query.keywords);
 
 	const onFormatChange = (v: SelectableValue) => {
 		onChange({ ...query, resultFormat: v.value });
@@ -53,6 +41,32 @@ const RawQueryEditor = (props: Props) => {
 		onRunQuery();
 	};
 
+	const RenderKeywords: React.JSX.Element = useMemo(() => {
+		const { query, onRunQuery, onChange } = props;
+		const onKeywordsBlur = () => {
+			onChange({
+				...query,
+				keywords: currentKeywords,
+			});
+			onRunQuery();
+		};
+		if (curFormat === Formats.Logs) {
+			return (
+				<InlineField label="Keywords" labelWidth={DETAIL_LABEL_WIDTH}>
+					<Input
+						type="text"
+						spellCheck={false}
+						placeholder="Text to find"
+						value={currentKeywords ?? ''}
+						onBlur={onKeywordsBlur}
+						onChange={(e: ChangeEvent<HTMLInputElement>) => setCurrentKeywords(e.currentTarget.value)}
+					/>
+				</InlineField>
+			);
+		}
+
+		return <></>;
+	}, [curFormat, currentKeywords, setCurrentKeywords, props]);
 	return (
 		<div>
 			<CodeEditor
@@ -78,6 +92,7 @@ const RawQueryEditor = (props: Props) => {
 						onChange={(e: ChangeEvent<HTMLInputElement>) => setCurrentAlias(e.currentTarget.value)}
 					/>
 				</InlineField>
+				{RenderKeywords}
 			</HorizontalGroup>
 		</div>
 	);
